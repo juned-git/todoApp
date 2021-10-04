@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo-App</title>
+    <style>
+        table {
+            width: 240px;
+            border-collapse: collapse;
+        }
+        #holder{
+            
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div id="holder">
+    <input type="text" name="" id="inp" placeholder="Add Notes...">
+    <button id="add">Add</button><br><br>
+    <table border="1" id="tab">
+        <tr>
+            <td colspan="3" align="center"><b>My Notes</b></td>
+        </tr>
+    </div>
+        <script>
+            'use strict';
+            let inp = document.getElementById('inp');
+            let add1 = document.getElementById('add');
+            let tab = document.getElementById('tab');
+            add1.style = 'cursor:pointer';
+            tab.firstElementChild.style.backgroundColor='cyan';
+            tab.firstElementChild.style.opacity='.9';
+
+            let i = 0;
+            function addRow() {
+                let tr = document.createElement("tr");
+                tab.insertAdjacentElement('beforeend', tr);
+
+                let td1 = document.createElement("td");
+                let td2 = document.createElement("td");
+                let td3 = document.createElement("td");
+
+                tr.insertAdjacentElement('beforeend', td1);
+                tr.insertAdjacentElement('beforeend', td2);
+                tr.insertAdjacentElement('beforeend', td3);
+                
+                td1.textContent = window.localStorage.getItem(i);
+                td2.textContent = "Delete";
+                td3.textContent = "Update";
+                td2.style.cursor='pointer';
+                td3.style.cursor='pointer';
+                td2.style.backgroundColor='red';
+                td2.style.color='white';
+                td3.style.backgroundColor='green';
+                td3.style.color='white';
+                td1.style.backgroundColor='gray';
+                td1.style.opacity='.9';
+                td1.style.color='white';
+                td2.addEventListener('click', function del() {
+ 
+                    let rem = tr.rowIndex - 1;
+                    tr.style.display='none';
+                    window.localStorage.removeItem(rem);
+                    td2.removeEventListener('click',del);
+                });
+
+                td3.addEventListener('click', function updateFun(){
+
+                    let uinp = document.createElement("input");
+                    td1.style = 'display:none';
+                    td3.style = 'display:none';
+                    tr.insertAdjacentElement('afterbegin', uinp);
+                    uinp.value = td1.textContent;
+                    let ubtn = document.createElement("td");
+                    tr.insertAdjacentElement('beforeend', ubtn);
+                    ubtn.textContent = "set";
+                    ubtn.style.cursor='pointer';
+                    ubtn.style.backgroundColor='yellow';
+                    ubtn.addEventListener('click', function fun() {
+                        window.localStorage.setItem(tr.rowIndex - 1, uinp.value);
+                        ubtn.style='display:none';
+                        uinp.style='display:none';
+                        td1.style = 'display:block';
+                        td1.textContent = uinp.value;
+                        td1.style.backgroundColor='gray';
+                        td1.style.color='white';
+                        td1.style.opacity='.9';
+                        td3.style = 'display:block';
+                        td3.style.cursor='pointer';
+                        td3.style.display='cover';
+                        td3.style.backgroundColor='green';
+                        td3.style.color='white';
+                       ubtn.removeEventListener('click',fun);
+                    });
+                });
+            }
+
+            add1.addEventListener('click', function () {
+                if (inp.value.length != 0) {
+                    window.localStorage.setItem(i, inp.value);
+                    inp.value = '';
+                    addRow();
+                    i++;
+                }
+            });
+
+            inp.addEventListener('keyup', function sun(e) {
+                if (inp.value.length != 0) {
+                    if (e.keyCode === 13) {
+                        window.localStorage.setItem(i, inp.value);
+                        inp.value = '';
+                        addRow();
+                        i++;
+                    }
+                }
+            });
+
+            let arr = [];
+
+            for (let n = 0; n < window.localStorage.length; n++) {
+                    arr[n] = window.localStorage.getItem(window.localStorage.key(n));
+            }
+            window.localStorage.clear();
+
+            for (let k = 0; k < arr.length; k++) {
+                window.localStorage.setItem(k, arr[k]);
+            }
+
+            for (let l = 0; l < arr.length; l++) {
+               addRow();
+                i = l + 1;
+            }
+           
+      </script>
+</body>
+</html>
